@@ -12,13 +12,13 @@ while True:
         girl = 0
         while(l<n):
             y = (input('мальчик или девочка?'))
-            if (y == "мальчик"):
+            if (y.lower()== "мальчик"):
                 boy += 1
                 print('рост')
                 x = float(input())
                 list1.append(x)
 
-            elif(y == 'девочка'):
+            elif(y.lower()== 'девочка'):
                 girl +=1
                 print('рост')
                 z = float(input())
@@ -35,5 +35,5 @@ while True:
         print('кол-во девочек=',girl)
         print('кол-во мальчиков=',boy)
     except ValueError:
-        print()
+        continue
 
