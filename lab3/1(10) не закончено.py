@@ -21,4 +21,4 @@ for i in range(0,len(list1)):
         count +=1
     else:
         continue
-print(count)
+print(count, '- количество элементов массива в промежутке (p;q)')
