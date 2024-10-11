@@ -1,9 +1,21 @@
 #Дан одномерный массив с размером 10 и два числа P и Q (P<Q)
 #Определить, сколько элементов массива заключено между P и Q.
-list1= [0,-424,45214,552,5235,235,50235,15135,2315,3]
+n= 10
+l = 0
+list1= []
 count = 0
-p = -55
-q = 504
+p = float(input('введите число P'))
+q = float(input('введите число Q'))
+print('введите 10 чисел массива')
+while(l<n):
+    try:
+        y = float(input())
+    except ValueError:
+        l+=1
+        n+=1
+        continue
+    list1.append(y)
+    l+=1
 for i in range(0,len(list1)):
     if p < list1[i] < q:
         count +=1
