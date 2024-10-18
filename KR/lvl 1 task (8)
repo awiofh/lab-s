@@ -1,0 +1,13 @@
+# вычислить сумму s = factorial(1)+factorial(2)+factorial(3)+factorial(4)+factorial(5)+factorial(6)
+from math import factorial
+s = 0
+x = 0
+for n in range(1,7):
+    s += factorial(n)
+print(s)
+#Проверка кода
+x = factorial(1)+factorial(2)+factorial(3)+factorial(4)+factorial(5)+factorial(6)
+if s == x:
+    print('Все верно')
+else:
+    print('Ошибка')
