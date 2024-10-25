@@ -3,19 +3,19 @@ n = int(input('Введите количество элементов масси
 list = []
 i = 0
 x = 0
-y = 0
 for i in range(n):
     list.append(int(input()))
 y = min(list)
 for x in range(n):
-    if y == list[x]:
+    if min(list) == list[x]:
         list[x] *= 2
+        break
     else:
         continue
 print(list)
 # 4
 # 2 1 1 2 - исходные данные
-#z = [2, 2, 2, 2]
+#z = [2, 2, 1, 2]
 #if z == list:
 #   print('все верно')
 #else:
