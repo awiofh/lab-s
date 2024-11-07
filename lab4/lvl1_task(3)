@@ -1,0 +1,26 @@
+#Найти след (сумму диагональных элементов) квадратной матрицы А размером 4 х 4).
+sum = 0
+i = 0
+stroka, stolbik = 4, 4
+matrix = []
+for i in range(stroka):
+    a= []
+    print(f'введите число {i} строки')
+    for m in range(stolbik):
+        a.append(int(input()))
+    matrix.append(a)
+for i in range(stolbik):
+    for j in range(stroka):
+        if (i == j) or (i + j == 3):
+          sum += matrix[i][j]
+print('сумма диагональных элементов =', sum)
+#[1, 2, 3, 4]
+#[5, 6, 7, 8]
+#[9, 10, 11, 12]
+#[13, 14, 15, 16] - исходные данные
+#z = 68
+#if z==sum:
+#   print('все верно')
+#else:
+#   print('ошибка')
+
