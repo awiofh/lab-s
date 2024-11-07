@@ -1,16 +1,15 @@
 #В матрице А размером 6×6 найти максимальный элемент на главной диагонали. Заменить нулями элементы матрицы,
 #расположенные правее главной диагонали в строках, расположенных выше
 #строки, содержащей максимальный элемент на главной диагонали.
-import numpy as np
 i = 0
 j = 0
-stroka, stolbik = 6, 6
+stolbik, stroka = 6, 6
 x = []
 matrix = []
-for i in range(stroka):
+for i in range(stolbik):
     a= []
     print(f'введите число {i} строки')
-    for m in range(stolbik):
+    for _ in range(stroka):
         a.append(int(input()))
     matrix.append(a)
 max_ = matrix[0][0]
@@ -20,7 +19,8 @@ for z in range(stroka):
         max_ = matrix[z][z]
         maxind = z
 print(f"максимальный элемент= {max_} строка- {maxind}")
-for z in range(maxind):
-    for j in range(z + 1, 6):
-        matrix[z][j] = 0
+for i in range(maxind):
+    for j in range(i + 1, 6):
+        matrix[i][j] = 0
 print(matrix)
+
