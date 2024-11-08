@@ -2,16 +2,14 @@
 from random import randint
 matrix = [[randint(-10, 10) for _ in range(5)] for _ in range(7)]
 print(matrix)
-countplus = []
+newmatrix= []
 for i in range(len(matrix)):
     count = 0
     for z in range(5):
         if matrix[i][z] > 0:
             count += 1
-        countplus.append(count)
-for i in range(len(matrix)):
-    for j in range(i+1, len(matrix)):
-        if countplus[i] < countplus[j]:
-            matrix[i], matrix[j] = matrix[j], matrix[i]
-            countplus[i], countplus[j] = countplus[j], countplus[j]
-print(matrix)
+        matrix[i] += [count]
+matrix.sort(key=lambda matrix: matrix[5])
+for i in range(6, -1, -1):
+    newmatrix += [matrix[i][:5]]
+print(newmatrix)
