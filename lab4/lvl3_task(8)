@@ -8,7 +8,7 @@ for i in range(len(matrix)):
     for z in range(5):
         if matrix[i][z] > 0:
             count += 1
-        matrix[i] += [count]
+    matrix[i] += [count]
 matrix.sort(key=lambda matrix: matrix[5])
 for i in range(6, -1, -1):
     newmatrix += [matrix[i][:5]]
