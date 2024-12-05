@@ -6,7 +6,7 @@ list2 = []
 i = 0
 x = 0
 for i in range(n):
-    list.append(int(input()))
+    list.append(int(input(f'введите {i+1} элемент массива')))
 for x in range(n):
     if list[x] < 0:
         list2.append(list[x])
