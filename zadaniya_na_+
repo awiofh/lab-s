@@ -1,1 +1,84 @@
+o = []
+x = []
+o_dlina = []
+x_dlina = []
 
+for i in range(4):
+    a = []
+    a.append(int(input(f'введите координату X {i+1}-ой точки: ')))
+    a.append(int(input(f'введите координату y {i+1}-ой точки: ')))
+    o.append(a)
+
+print('точки крестики')
+
+
+for i in range(4):
+    a = []
+    a.append(int(input(f'введите координату X {i+1} -ой точки: ')))
+    a.append(int(input(f'введите координату y {i+1} -ой точки: ')))
+    x.append(a)
+
+
+k = int(input('введите коэффицент K - нечетный '))
+
+
+while k % 2 == 0:
+    print('введите нечетное число для коэффицента K')
+    k = int(input())
+
+
+print('введите координаты вашей точки')
+
+
+g = [int(input('x=')), int(input('y='))]
+
+def lenght(b,i):
+    dlina = math.sqrt((g[0] - b[i][0])**2 + (g[1] - b[i][1])**2)
+    return dlina
+
+for i in range(4):
+    o_dlina.append(lenght(o,i))
+    x_dlina.append(lenght(x,i))
+
+o_dlina.sort(reverse=False), x_dlina.sort(reverse=False)
+count_o = 0
+count_x = 0
+i = 0
+j = 0
+d = 0
+
+while d != k:
+        if o_dlina[i] == x_dlina[j]:
+            d += 2
+            count_x += 1
+            count_o += 1
+            i += 1
+            j += 1
+
+        elif o_dlina[i] > x_dlina[j]:
+            count_x += 1
+            d += 1
+            j += 1
+
+        elif o_dlina[i] == x_dlina[j]:
+            d += 1
+            count_x += 1
+            count_o += 1
+            i += 1
+            j += 1
+        elif o_dlina[i] < x_dlina[j]:
+            count_o += 1
+            d += 1
+            i += 1
+print('')
+print(count_o, '-количество ближайших точек ноликов')
+print(count_x, '-количество ближайших точек крестиков')
+
+if count_o == count_x:
+    print('точка не определена, попробуйте взять другой коэф. K ')
+
+elif count_x > count_o:
+    print('точка принадлежит классу крестиков')
+
+else:
+    print('точка принадлежит классу ноликов')
