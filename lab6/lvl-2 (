@@ -1,0 +1,54 @@
+#Студенты одной группы в сессию сдают четыре экзамена.
+# Составить список студентов, средний балл которых по всем экзаменам не менее «4».
+# Результаты вывести в виде таблицы с заголовком в порядке убывания среднего балла.
+
+from random import randint
+print(f'\033[1;30;47m  {'Фамилия':<10} {'1-экзамен':^10} {'2-экзамен':^10} {'3-экзамен':^10} {'4-экзамен':^10} {'Средняя оценка':^10}  \033[m')
+class student():
+    def __init__(self, name, exam1, exam2, exam3, exam4):
+        self.name = name
+        self.exam1 = exam1
+        self.exam2 = exam2
+        self.exam3 = exam3
+        self.exam4 = exam4
+    def output(self):
+        return f'\033[1;30;47m {self.name:<10}  {self.exam1:^10}{self.exam2:^10} {self.exam3:^10}{self.exam4:^13}                \033[0m'
+    def average(self):
+        avg = (self.exam1 + self.exam2 + self.exam3 + self.exam4)/4
+        return avg
+    def output1(self):
+        avg = (self.exam1 + self.exam2 + self.exam3 + self.exam4)/4
+        return f'\033[1;30;47m {self.name:<10}  {self.exam1:^10}{self.exam2:^10} {self.exam3:^10}{self.exam4:^13} {avg:^10}     \033[0m'
+
+
+students = [
+            student('Иванов', randint(2,5), randint(2,5),randint(2,5),randint(2,5)),
+            student('Сидоров', randint(2,5), randint(2,5),randint(2,5),randint(2,5)),
+            student('Петров', randint(2,5), randint(2,5),randint(2,5),randint(2,5)),
+            student('Кузьмин', randint(2,5), randint(2,5),randint(2,5),randint(2,5)),
+            student('Соболев', randint(2,5), randint(2,5),randint(2,5),randint(2,5)),
+            student('Мишин', randint(2,5), randint(2,5),randint(2,5),randint(2,5)),
+            student('Гришин', randint(2,5), randint(2,5),randint(2,5),randint(2,5)),
+            student('Крылов', randint(2,5), randint(2,5),randint(2,5),randint(2,5)),
+            student('Новиков', randint(2,5), randint(2,5),randint(2,5),randint(2,5)),
+            student('Петухов', randint(2,5), randint(2,5),randint(2,5),randint(2,5))
+                                                                                                                    ]
+
+students_avg = []
+
+
+for i in students:
+    if i.average() >= 4:
+        students_avg.append(i)
+
+
+students_avg.sort(key=lambda students_avg: students_avg.average(),reverse=True)
+
+
+for i in students:
+    print(f'\033[1;30;47m{i.output()}\033[0m')
+
+print(f'\033[0;30;42m{' '}\033[0m'*73)
+
+for i in students_avg:
+    print(i.output1())
