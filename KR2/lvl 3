@@ -1,0 +1,44 @@
+# Лыжные гонки проводятся отдельно для двух групп участников.
+#Результаты соревнований заданы в виде фамилий участников и их результатов в каждой группе.
+#Расположить результаты соревнований в каждой группе в порядке занятых мест.
+#Объединить результаты обеих групп с сохранением упорядоченности и
+#вывести в виде таблицы с заголовком
+
+from random import uniform
+
+class sportsmen():
+    def __init__(self, name, result, group_number):
+        self.group_number = group_number
+        self.name = name
+        self.result = result
+    def output(self):
+        return f'\033[1;30;47m {self.name:^10} | {self.result:^20} | {self.group_number:^20} | \033[0m'
+
+
+print(f'\033[1;30;42m {'Фамилия':^10} | {'Время':^20} | {'Группа':^20} | \033[0m')
+
+sportsmens_group_one = [  sportsmen('Иванов',f' {uniform(0,10):.1f}', 1),
+                sportsmen('Сидоров',f' {uniform(0,10):.1f}', 1),
+                sportsmen('Петров', f' {uniform(0,10):.1f}', 1),
+                sportsmen('Кузьмин', f' {uniform(0,10):.1f}', 1),
+                sportsmen('Соболев', f' {uniform(0,10):.1f}', 1)
+                          ]
+
+sportsmens_group_two = [ sportsmen('Мишин', f' {uniform(0,10):.1f}', 2),
+                sportsmen('Гришин', f' {uniform(0,10):.1f}', 2),
+                sportsmen('Крылов', f' {uniform(0,10):.1f}', 2),
+                sportsmen('Новиков', f' {uniform(0,10):.1f}', 2),
+                sportsmen('Петухов',f' {uniform(0,10):.1f}', 2)
+                                                                    ]
+
+
+sportsmens_group_one.sort(key=lambda x: x.result)
+sportsmens_group_two.sort(key=lambda x: x.result)
+
+all_groups  = [i for i in sportsmens_group_one] + [i for i in sportsmens_group_two]
+all_groups.sort(key=lambda x: x.result)
+
+for i in all_groups:
+
+    print(i.output())
+
