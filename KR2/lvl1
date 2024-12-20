@@ -1,0 +1,49 @@
+#В матрице А размером 5 х 8 заполнены первые 7 столбцов. Поместить вектор В размером 5 после столбца,
+#содержащего минимальный элемент в 5-й строке.
+
+from random import  randint
+import numpy as np
+
+a = np.array([[ 0 for _ in range(7)] for _ in range(5)])
+
+for i in range(5):
+    for j in range(6):
+        a[i][j] = randint(-5,5)
+
+
+b = [randint(-5,5) for _ in range(5)]
+
+print(f'{b} - Вектор B')
+print('='*45)
+
+
+min_element = a[4][0]
+index = 0
+
+for i in range(7):
+    if min_element > a[4][i]:
+        min_element = a[4][i]
+        index = i
+
+
+a_new = []
+
+
+for i in range(5):
+    g = []
+    for j in range(index + 1, 7):
+        g.append(a[i][j])
+    a_new.append(g)
+
+
+print(f'{a} - Исходная матрица')
+print('='*45)
+
+
+for i in range(5):
+    a[i][index+1] = b[i]
+    for j,n in zip(range(index + 2, 7), range(len(a_new))):
+        a[i][j] = a_new[i][n]
+
+
+print(f'{a} - Полученная матрица')
