@@ -1,0 +1,37 @@
+#В матрицах В размером 5 х 5 и С размером 6x6 удалить строку, содержащую максимальный элемент на диагонали.
+# Поиск максимального элемента диагонали осуществить в методе.
+
+from audioop import reverse
+from random import randint
+import numpy as np
+
+
+a = [[randint(-5, 5) for _ in range(5)] for _ in range(5)]
+b = [[randint(-5, 5 ) for _ in range(6)] for _ in range(6)]
+
+def max_element(x):
+    c = []
+    for i in range(len(x)):
+        p = []
+        p.append(x[i][i])
+        p.append(i)
+        c.append(p)
+    c.sort(key=lambda x: x[0], reverse=True)
+    return c[0]
+
+def deleting(x,y):
+    c = []
+    for i in range(0,y):
+        c.append(x[i])
+    for i in range(y+1,len(x)):
+        c.append((x[i]))
+    return np.array(c)
+max_elements = [max_element(a), max_element(b)]
+
+print(f'{np.array(a)} - Исходная матрица A')
+print('-'*45)
+print(f'{deleting(a,max_elements[0][1])} - Полученная матрица А')
+print('='*45)
+print(f'{np.array(b)} - Исходная матрица B')
+print('-'*45)
+print(f'{deleting(b, max_elements[1][1])} - Полученная матрица B')
