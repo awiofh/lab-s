@@ -1,0 +1,40 @@
+#Группе студентов в результате полусеместровой аттестации были выставлены оценки по информатике, а также определено количество пропущенных занятий.
+# Успеваемость каждого студента оценивается следующими баллами: «0» (неаттестован), «2», «3», «4» или «5».
+# Вывести список неуспевающих (оценка «2») студентов в порядке убывания количества пропущенных ими занятий.
+
+from random import randint
+print(f'\033[1;30;42m{'Фамилия':^10} {'Оценка':^10} {'Пропущенных занятий':^10}    \033[0m')
+class student():
+
+    def __init__(self,name, grade, miss):
+        self.name = name
+        self.grade = grade
+        self.miss = miss
+
+    def output(self):
+        return f'\033[1;30;42m {self.name:<10} {self.grade:^10} {self.miss:^15}       \033[0m'
+
+students = [
+            student('Иванов', randint(0,5), randint(0,10)),
+            student('Сидоров', randint(0,5), randint(0,10)),
+            student('Петров', randint(0,5), randint(0,10)),
+            student('Кузьмин', randint(0,5), randint(0,10)),
+            student('Соболев', randint(0,5), randint(0,10)),
+            student('Мишин', randint(0,5), randint(0,10)),
+            student('Гришин', randint(0,5), randint(0,10)),
+            student('Крылов', randint(0,5), randint(0,10)),
+            student('Новиков', randint(0,5), randint(0,10)),
+            student('Петухов', randint(0,5), randint(0,10))
+                                                                                ]
+
+students_grade2 = []
+for i in range(10):
+     if students[i].grade == 2:
+         students_grade2.append(students[i])
+students_grade2.sort(key=lambda students_grade2: students_grade2.miss, reverse=True)
+
+for i in students:
+    print(i.output())
+print(f'\033[1;30;41m {'Неуспевающие студенты'}                       \033[0m')
+for i in students_grade2:
+    print(i.output())
