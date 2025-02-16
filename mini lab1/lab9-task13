@@ -1,0 +1,27 @@
+#Максимальный элемент массива среди элементов с четными
+#индексами заменить значением его индекса.
+
+x = open('Массив.txt', 'r')
+
+try:
+
+    y = x.readline().split()
+    b = []
+    for i in range(len(y)):
+        b.append(int(y[i]))
+
+    print(b)
+
+    def replace(x):
+        max_element = [x[0], 0]
+        for i in range(0,len(x),2):
+            print(i)
+            if max_element[0] < x[i]:
+                max_element[0],max_element[1] = x[i], i
+        x[max_element[1]] = max_element[1]
+        return x
+
+    print(replace(b))
+
+finally:
+    x.close()
