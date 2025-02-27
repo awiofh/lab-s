@@ -1,1 +1,39 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+
+f = open('данные.txt', 'r')
+b = f.readlines()
+x = []
+c=''
+x_to4ki = b[0]
+x_to4ki = x_to4ki[2:]
+for i in x_to4ki:
+    if i ==' ':
+        x.append(int(c))
+        c =''
+    else:
+        c += i
+
+y_to4ki = b[1]
+y_to4ki = y_to4ki[2:]
+c =''
+y = []
+
+
+for i in y_to4ki:
+    if i ==' ':
+        y.append(int(c))
+        c =''
+    else:
+        c += i
+
+
+plt.plot(x, y, marker = 'o', color = 'red')
+plt.title('график по заданным точкам')
+plt.xlabel('X координаты')
+plt.ylabel('Y координаты')
+plt.grid(True)
+plt.show()
 
