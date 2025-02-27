@@ -1,0 +1,27 @@
+#1.	Напишите программу, строящую график функции. Коэффициенты a,b,c и диапазон задаются с клавиатуры.
+#10	f(x)=a+b·x2+c·x1/2
+
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+a = float(input('введите коэф. a: '))
+b = float(input('введите коэф. b: '))
+c = float(input('введите коэф. c: '))
+print('ввдеите диапазон x')
+x = np.linspace(float(input('от')),float(input('до')), 100)
+y = a+b*(x*x)+c*(x**0.5)
+
+
+
+plt.plot(x, y, label=f'f(x) = {a} + {b}*x^2 + {c}*(x)^0.5', color='blue')
+plt.title('График функции f(x)')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.axhline(0, ls='-')
+plt.axvline(0, ls='-')
+plt.grid()
+plt.legend()
+plt.show()
