@@ -1,0 +1,123 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from typing import Callable, Tuple, List
+
+
+def f(x: float) -> float:
+    """Исходная функция: x^2 + e^x - 5sin(x)"""
+    return x ** 2 + np.exp(x) - 5 * np.sin(x)
+
+
+def df(x: float) -> float:
+    """Производная функции: 2x + e^x - 5cos(x)"""
+    return 2 * x + np.exp(x) - 5 * np.cos(x)
+
+
+def gradientDescend(
+        func: Callable[[float], float] = lambda x: x ** 2,
+        diffFunc: Callable[[float], float] = lambda x: 2 * x,
+        x0: float = 3.0,
+        speed: float = 0.01,
+        epochs: int = 100
+) -> Tuple[List[float], List[float]]:
+    """
+    Реализация метода градиентного спуска
+
+    Параметры:
+    func - минимизируемая функция
+    diffFunc - производная функции
+    x0 - начальная точка
+    speed - скорость обучения
+    epochs - количество итераций
+
+    Возвращает:
+    xList, yList - списки значений x и y на каждом шаге
+    """
+    xList = []
+    yList = []
+    x = x0
+
+    for _ in range(epochs):
+        gradient = diffFunc(x)
+        x = x - speed * gradient
+        xList.append(x)
+        yList.append(func(x))
+
+    return xList, yList
+
+
+def plot_results(
+        xList: List[float],
+        yList: List[float],
+        func: Callable[[float], float],
+        x_range: Tuple[float, float] = (-3, 3)
+) -> None:
+    """Визуализация результатов градиентного спуска"""
+    x_vals = np.linspace(x_range[0], x_range[1], 400)
+    y_vals = func(x_vals)
+
+    plt.figure(figsize=(12, 6))
+    plt.plot(x_vals, y_vals, label='Функция f(x)', linewidth=2)
+    plt.scatter(xList, yList, c='red', s=40, label='Точки градиентного спуска', zorder=5)
+    plt.scatter(xList[-1], yList[-1], c='green', s=150, label='Финальная точка', zorder=6)
+
+    plt.xlabel('x', fontsize=12)
+    plt.ylabel('f(x)', fontsize=12)
+    plt.title('Градиентный спуск', fontsize=14)
+    plt.legend(fontsize=10)
+    plt.grid(True, alpha=0.3)
+    plt.show()
+
+
+def find_critical_speed(
+        func: Callable[[float], float] = f,
+        diffFunc: Callable[[float], float] = df,
+        x0: float = 3.0,
+        max_speed: float = 1.0,
+        tol: float = 1e-6
+) -> float:
+    """
+    Нахождение критической скорости обучения
+
+    Возвращает максимальную скорость, при которой метод еще сходится
+    """
+    low = 0.0
+    high = max_speed
+
+    while high - low > tol:
+        mid = (low + high) / 2
+        x_list, _ = gradientDescend(func, diffFunc, x0, mid, 100)
+
+        # Проверяем сходимость (значение не ушло в бесконечность)
+        if np.isfinite(x_list[-1]) and abs(x_list[-1] - x_list[-2]) < 1.0:
+            low = mid
+        else:
+            high = mid
+
+    return (low + high) / 2
+
+
+if __name__ == "__main__":
+    # Параметры по умолчанию
+    x0 = 3.0
+    speed = 0.05
+    epochs = 50
+
+    # Запуск градиентного спуска
+    x_list, y_list = gradientDescend(f, df, x0, speed, epochs)
+    print(f"Начальная точка: x = {x0}")
+    print(f"Найденный минимум: x = {x_list[-1]:.6f}, f(x) = {y_list[-1]:.6f}")
+
+    # Визуализация
+    plot_results(x_list, y_list, f, (-2, 3))
+
+    # Поиск критической скорости
+    critical_speed = find_critical_speed(f, df, x0)
+    print(f"\nКритическая скорость: {critical_speed:.6f}")
+
+    # Проверка сходимости
+    print("\nПроверка сходимости:")
+    for test_speed in [critical_speed * 0.9, critical_speed, critical_speed * 1.1]:
+        x_test, y_test = gradientDescend(f, df, x0, test_speed, 100)
+        status = "сходится" if abs(x_test[-1] - x_test[-2]) < 0.1 else "расходится"
+        print(f"speed = {test_speed:.4f}: {status} (x = {x_test[-1]:.4f})")
