@@ -1,0 +1,97 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_blobs, make_moons, make_circles
+from sklearn.cluster import KMeans, DBSCAN
+from sklearn.mixture import GaussianMixture
+from sklearn.preprocessing import StandardScaler
+
+
+
+def generate_blobs():
+    return make_blobs(n_samples=300, centers=3, cluster_std=1.0, random_state=42)[0]
+
+
+def generate_moons():
+    return make_moons(n_samples=300, noise=0.05, random_state=42)[0]
+
+
+def generate_circles():
+    return make_circles(n_samples=300, factor=0.5, noise=0.05, random_state=42)[0]
+
+
+def generate_anisotropic():
+    X, _ = make_blobs(n_samples=300, centers=3, random_state=42)
+    transformation = [[0.6, -0.6], [-0.4, 0.8]]
+    return np.dot(X, transformation)
+
+
+def generate_varied_variances():
+    return make_blobs(n_samples=300, centers=3, cluster_std=[1.0, 2.5, 0.5], random_state=42)[0]
+
+
+def generate_noise():
+    return np.random.rand(300, 2) * 4 - 2
+
+
+datasets = {
+    "Blobs": generate_blobs(),
+    "Moons": generate_moons(),
+    "Circles": generate_circles(),
+    "Anisotropic": generate_anisotropic(),
+    "Varied Variances": generate_varied_variances(),
+    "Noise": generate_noise()
+}
+
+
+
+def apply_kmeans(X):
+    return KMeans(n_clusters=3, random_state=42).fit_predict(X)
+
+
+def apply_dbscan(X):
+    X_scaled = StandardScaler().fit_transform(X)
+    return DBSCAN(eps=0.3, min_samples=5).fit_predict(X_scaled)
+
+
+def apply_gmm(X):
+    return GaussianMixture(n_components=3, random_state=42).fit_predict(X)
+
+
+fig, axes = plt.subplots(6, 3, figsize=(20, 30))  
+plt.subplots_adjust(
+    hspace=0.7,  
+    wspace=0.4, 
+    top=0.95,  
+    bottom=0.05  
+)
+
+for i, (dataset_name, X) in enumerate(datasets.items()):
+
+    labels_kmeans = apply_kmeans(X)
+    labels_dbscan = apply_dbscan(X)
+    labels_gmm = apply_gmm(X)
+
+
+    ax = axes[i, 0]
+    ax.scatter(X[:, 0], X[:, 1], c=labels_kmeans, cmap='viridis', s=15)
+    ax.set_title(f'{dataset_name}\nK-means', pad=20, fontsize=12)  
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+
+    ax = axes[i, 1]
+    ax.scatter(X[:, 0], X[:, 1], c=labels_dbscan, cmap='viridis', s=15)
+    ax.set_title(f'{dataset_name}\nDBSCAN', pad=20, fontsize=12)
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+
+    ax = axes[i, 2]
+    ax.scatter(X[:, 0], X[:, 1], c=labels_gmm, cmap='viridis', s=15)
+    ax.set_title(f'{dataset_name}\nGMM', pad=20, fontsize=12)
+    ax.set_xticks([])
+    
+    ax.set_yticks([])
+
+plt.savefig('clustering_results.png', dpi=300, bbox_inches='tight')
+plt.show()
