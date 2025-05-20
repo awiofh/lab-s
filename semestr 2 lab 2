@@ -3,64 +3,75 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 
 np.random.seed(228)
-centers = [(2, 3), (7, 5), (3, 8)]
-radii = [1, 1.5, 0.8]
-n_points_per_cluster = 50
+circle_positions = [(2, 3), (7, 5), (3, 8)]
+circle_sizes = [1, 1.5, 0.8]
+points_per_circle = 50
 
-x, y = [], []
-for i in range(3):
-    theta = np.random.uniform(0, 2 * np.pi, n_points_per_cluster)
-    r = radii[i] + np.random.normal(0, 0.1, n_points_per_cluster)
-    x_cluster = centers[i][0] + r * np.cos(theta)
-    y_cluster = centers[i][1] + r * np.sin(theta)
-    x.extend(x_cluster)
-    y.extend(y_cluster)
+coordinates_x, coordinates_y = [], []
+for idx in range(3):
+    angles = np.random.uniform(0, 2 * np.pi, points_per_circle)
+    distances = circle_sizes[idx] + np.random.normal(0, 0.1, points_per_circle)
+    circle_x = circle_positions[idx][0] + distances * np.cos(angles)
+    circle_y = circle_positions[idx][1] + distances * np.sin(angles)
+    coordinates_x.extend(circle_x)
+    coordinates_y.extend(circle_y)
 
-def k_means(x, y, k=3):
-    points = np.array(list(zip(x, y)))
-    centroids = points[np.random.choice(len(points), k, replace=False)]
-    labels_history = []
-    centroids_history = [centroids.copy()]
+def cluster_analysis(data_x, data_y, clusters=3):
+    data_points = np.array(list(zip(data_x, data_y)))
+    cluster_centers = data_points[np.random.choice(len(data_points), clusters, replace=False)]
+    cluster_assignments_log = []
+    cluster_centers_log = [cluster_centers.copy()]
 
-    max_iters = 100
-    epsilon = 0.001
+    max_iterations = 100
+    convergence_threshold = 0.001
 
     while True:
-        distances = np.sqrt(((points - centroids[:, np.newaxis]) ** 2).sum(axis=2))
-        labels = np.argmin(distances, axis=0)
-        labels_history.append(labels.copy())
+        point_distances = np.sqrt(((data_points - cluster_centers[:, np.newaxis]) ** 2).sum(axis=2))
+        current_assignments = np.argmin(point_distances, axis=0)
+        cluster_assignments_log.append(current_assignments.copy())
 
-        new_centroids = np.array([points[labels == i].mean(axis=0) for i in range(k)])
+        updated_centers = np.array([data_points[current_assignments == i].mean(axis=0) for i in range(clusters)])
 
-        if np.all(np.abs(new_centroids - centroids) < epsilon):
+        if np.all(np.abs(updated_centers - cluster_centers) < convergence_threshold):
             break
 
-        centroids = new_centroids
-        centroids_history.append(centroids.copy())
+        cluster_centers = updated_centers
+        cluster_centers_log.append(cluster_centers.copy())
 
-    return labels_history, centroids_history
+    return cluster_assignments_log, cluster_centers_log
 
 
-labels_history, centroids_history = k_means(x, y, k=3)
+cluster_assignments_log, cluster_centers_log = cluster_analysis(coordinates_x, coordinates_y, clusters=3)
 
-fig, ax = plt.subplots(figsize=(8, 6))
-plt.subplots_adjust(bottom=0.25)
+plt.style.use('seaborn-v0_8')
+plot_figure, plot_axis = plt.subplots(figsize=(10, 7))
+plt.subplots_adjust(bottom=0.2)
 
-ax_slider = plt.axes([0.15, 0.1, 0.7, 0.03])
-slider = Slider(ax_slider, 'Iteration', 0, len(labels_history) - 1,
-                valinit=0, valstep=1, valfmt='%0.0f')
+slider_axis = plt.axes([0.15, 0.1, 0.7, 0.03])
+iteration_slider = Slider(slider_axis, 'Шаг алгоритма', 0, len(cluster_assignments_log) - 1,
+                        valinit=0, valstep=1, valfmt='%0.0f',
+                        color='#4C72B0', track_color='#DDDDDD')
 
-points = ax.scatter(x, y, c=labels_history[0], cmap='viridis', s=50, alpha=0.6)
-cent = ax.scatter(centroids_history[0][:, 0], centroids_history[0][:, 1],
-                  c='red', marker='o', s=100, linewidth=3)
-ax.set_title(f'Iteration 0')
+data_plot = plot_axis.scatter(coordinates_x, coordinates_y,
+                            c=cluster_assignments_log[0],
+                            cmap='plasma', s=60, alpha=0.7,
+                            edgecolor='white', linewidth=0.3)
+centers_plot = plot_axis.scatter(cluster_centers_log[0][:, 0], cluster_centers_log[0][:, 1],
+                              c='#D62728', marker='*', s=200,
+                              edgecolor='black', linewidth=1,
+                              label='Центры кластеров')
+plot_axis.set_title('Визуализация работы K-means\nШаг 0', fontsize=12, pad=20)
+plot_axis.grid(True, linestyle='--', alpha=0.6)
+plot_axis.legend(loc='upper right')
+plot_axis.set_xlabel('Ось X', fontsize=10)
+plot_axis.set_ylabel('Ось Y', fontsize=10)
 
-def update(val):
-    iteration = int(slider.val)
-    points.set_array(labels_history[iteration])
-    cent.set_offsets(centroids_history[iteration])
-    ax.set_title(f'Iteration {iteration}')
-    fig.canvas.draw_idle()
+def update_visualization(step):
+    current_step = int(iteration_slider.val)
+    data_plot.set_array(cluster_assignments_log[current_step])
+    centers_plot.set_offsets(cluster_centers_log[current_step])
+    plot_axis.set_title(f'Визуализация работы K-means\nШаг {current_step}', fontsize=12, pad=20)
+    plot_figure.canvas.draw_idle()
 
-slider.on_changed(update)
+iteration_slider.on_changed(update_visualization)
 plt.show()
