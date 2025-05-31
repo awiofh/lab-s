@@ -1,0 +1,104 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider
+import random
+
+def generate_parabola_data(quad_coef, linear_coef, const_coef, x_min=-10, x_max=10, num_points=100):
+    x_values = np.linspace(x_min, x_max, num_points)
+    y_values = quad_coef * x_values**2 + linear_coef * x_values + const_coef + np.array([random.uniform(-3, 3) for _ in range(num_points)])
+    return x_values, y_values
+
+
+true_quad = float(input('Введите коэффициент при x²: '))
+true_linear = float(input('Введите коэффициент при x: '))
+true_const = float(input('Введите свободный коэффициент: '))
+
+x_data, y_data = generate_parabola_data(true_quad, true_linear, true_const)
+
+def model_prediction(x, quad, linear, const):
+    return quad * x**2 + linear * x + const
+
+def mean_squared_error(actual, predicted):
+    return np.mean((actual - predicted) ** 2)
+
+def compute_gradients(x, y, current_quad, current_linear, current_const):
+    error = model_prediction(x, current_quad, current_linear, current_const) - y
+    grad_quad = (2 / len(x)) * np.dot(error, x**2)
+    grad_linear = (2 / len(x)) * np.dot(error, x)
+    grad_const = (2 / len(x)) * np.sum(error)
+    return grad_quad, grad_linear, grad_const
+
+def train_model(x, y, learning_rate=0.0001, num_epochs=100, init_quad=0, init_linear=0, init_const=0):
+    quad, linear, const = init_quad, init_linear, init_const
+    quad_history = [quad]
+    linear_history = [linear]
+    const_history = [const]
+    loss_history = [mean_squared_error(y, model_prediction(x, quad, linear, const))]
+    
+    for epoch in range(num_epochs):
+        d_quad, d_linear, d_const = compute_gradients(x, y, quad, linear, const)
+        
+        quad -= learning_rate * d_quad
+        linear -= learning_rate * d_linear
+        const -= learning_rate * d_const
+        
+        quad_history.append(quad)
+        linear_history.append(linear)
+        const_history.append(const)
+        loss_history.append(mean_squared_error(y, model_prediction(x, quad, linear, const)))
+    
+    return quad_history, linear_history, const_history, loss_history
+
+
+learning_rate = 0.0001
+num_epochs = 100
+initial_quad, initial_linear, initial_const = 0, 0, 0
+
+quad_coefs, linear_coefs, const_coefs, mse_values = train_model(x_data, y_data, learning_rate, num_epochs, initial_quad, initial_linear, initial_const)
+
+
+fig, (data_plot, loss_plot) = plt.subplots(1, 2, figsize=(14, 6))
+plt.subplots_adjust(bottom=0.25)
+
+
+data_plot.scatter(x_data, y_data, color='steelblue', label='Наблюдения', alpha=0.7)
+model_line, = data_plot.plot(x_data, model_prediction(x_data, initial_quad, initial_linear, initial_const), 
+                            'r-', linewidth=2, label='Модель')
+data_plot.set_xlabel('Ось X', fontsize=10)
+data_plot.set_ylabel('Ось Y', fontsize=10)
+data_plot.set_title('Аппроксимация квадратичной функции', fontsize=12)
+data_plot.legend()
+data_plot.grid(True, linestyle='--', alpha=0.6)
+
+
+loss_plot.plot(range(len(mse_values)), mse_values, 'darkorange')
+loss_plot.set_xlabel('Номер эпохи', fontsize=10)
+loss_plot.set_ylabel('Среднеквадратичная ошибка', fontsize=10)
+loss_plot.set_title('Кривая обучения', fontsize=12)
+loss_plot.grid(True, linestyle='--', alpha=0.6)
+
+
+slider_ax = plt.axes([0.25, 0.1, 0.55, 0.03])
+epoch_slider = Slider(slider_ax, 'Эпоха', 0, num_epochs, valinit=0, valstep=1)
+
+def update_plot(epoch_num):
+    epoch = int(epoch_num)
+    current_quad = quad_coefs[epoch]
+    current_linear = linear_coefs[epoch]
+    current_const = const_coefs[epoch]
+    current_loss = mse_values[epoch]
+    
+    model_line.set_ydata(model_prediction(x_data, current_quad, current_linear, current_const))
+    data_plot.set_title(f'Эпоха {epoch}: a={current_quad:.3f}, b={current_linear:.3f}, c={current_const:.3f}\nMSE={current_loss:.3f}', fontsize=12)
+    fig.canvas.draw_idle()
+
+epoch_slider.on_changed(update_plot)
+
+plt.show()
+
+
+final_quad, final_linear, final_const = quad_coefs[-1], linear_coefs[-1], const_coefs[-1]
+print("\nРезультаты обучения:")
+print(f"Конечные коэффициенты: a = {final_quad:.4f}, b = {final_linear:.4f}, c = {final_const:.4f}")
+print(f"Финальное значение MSE: {mse_values[-1]:.4f}")
+print(f"Исходные коэффициенты: a = {true_quad}, b = {true_linear}, c = {true_const}")
